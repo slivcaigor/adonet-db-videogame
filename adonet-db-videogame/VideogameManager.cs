@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace adonet_db_videogame
 {
@@ -140,7 +141,38 @@ namespace adonet_db_videogame
 
         public static void CercaVideogiochiPerNome()
         {
+            Console.Write("Inserisci il nome del videogioco da cercare: ");
+            string name = Console.ReadLine() ?? throw new ArgumentNullException(nameof(name));
+
+            try
+            {
+                string connectionString = "Data Source=localhost;Initial Catalog=db_videogames;Integrated Security=True";
+                using SqlConnection conn = new(connectionString);
+                conn.Open();
+
+                string query = "SELECT * FROM videogames WHERE name LIKE @name";
+
+                using SqlCommand command = new(query, conn);
+                command.Parameters.AddWithValue("@name", $"%{name}%");
+
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Console.WriteLine($"ID: {reader["id"]}");
+                    Console.WriteLine($"Nome: {reader["name"]}");
+                    Console.WriteLine($"Descrizione: {reader["overview"]}");
+                    Console.WriteLine($"Data di rilascio: {(DateTime)reader["release_date"]:dd/MM/yyyy}");
+                    Console.WriteLine($"ID della casa di sviluppo: {reader["software_house_id"]}");
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Clear();
+                Console.WriteLine($"Si è verificato un errore durante la ricerca del videogioco: {ex.Message}");
+            }
         }
+
 
         public static void CancellaVideogioco()
         {

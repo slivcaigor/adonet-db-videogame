@@ -10,7 +10,7 @@
                 Console.WriteLine("Seleziona un'opzione:");
                 Console.WriteLine("1. Inserisci un nuovo videogioco");
                 Console.WriteLine("2. Ricercare un videogioco per id");
-                Console.WriteLine("3. Ricercare tutti i videogiochi attraverso il nome");
+                Console.WriteLine("3. Ricercare un videogioco attraverso il nome");
                 Console.WriteLine("4. Cancella un videogioco");
                 Console.WriteLine("5. Chiudi il programma");
 
