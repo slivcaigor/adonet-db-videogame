@@ -96,6 +96,46 @@ namespace adonet_db_videogame
 
         public static void CercaVideogiocoPerId()
         {
+            Console.Write("Inserisci l'ID del videogioco: ");
+            // Legge l'input dell'utente come una stringa e lo converte in un numero intero
+            if (!int.TryParse(Console.ReadLine(), out int videogameId))
+            {
+                Console.WriteLine("L'ID del videogioco non è un numero valido!");
+                return;
+            }
+
+            try
+            {
+                string connectionString = "Data Source=localhost;Initial Catalog=db_videogames;Integrated Security=True";
+                using SqlConnection conn = new(connectionString);
+                conn.Open();
+
+                string query = "SELECT * FROM videogames WHERE id = @videogameId";
+
+                using SqlCommand command = new(query, conn);
+                command.Parameters.AddWithValue("@videogameId", videogameId);
+
+                // Esegue la query e legge il risultato
+                using SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    // Se è presente un record con l'ID specificato, stampa i dati del videogioco
+                    Console.WriteLine($"ID: {reader["id"]}");
+                    Console.WriteLine($"Nome: {reader["name"]}");
+                    Console.WriteLine($"Descrizione: {reader["overview"]}");
+                    Console.WriteLine($"Data di rilascio: {((DateTime)reader["release_date"]).ToString("dd/MM/yyyy")}");
+                    Console.WriteLine($"ID casa di sviluppo: {reader["software_house_id"]}");
+                }
+                else
+                {
+                    Console.WriteLine($"Nessun videogioco trovato con ID {videogameId}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Clear();
+                Console.WriteLine($"Si è verificato un errore durante la ricerca del videogioco: {ex.Message}");
+            }
         }
 
         public static void CercaVideogiochiPerNome()
