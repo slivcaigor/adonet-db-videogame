@@ -94,7 +94,6 @@ namespace adonet_db_videogame
 
         }
 
-
         public static void CercaVideogiocoPerId()
         {
             Console.Write("Inserisci l'ID del videogioco: ");
@@ -173,9 +172,43 @@ namespace adonet_db_videogame
             }
         }
 
-
         public static void CancellaVideogioco()
         {
+            Console.Write("Inserisci l'ID del videogioco da cancellare: ");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("L'ID inserito non è valido!");
+                return;
+            }
+
+            try
+            {
+                string connectionString = "Data Source=localhost;Initial Catalog=db_videogames;Integrated Security=True";
+                using SqlConnection conn = new(connectionString);
+                conn.Open();
+
+                string query = "DELETE FROM videogames WHERE id = @id";
+
+                using SqlCommand command = new(query, conn);
+                command.Parameters.AddWithValue("@id", id);
+
+                int result = command.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    Console.WriteLine($"Nessun videogioco trovato con ID {id}");
+                }
+                else
+                {
+                    Console.WriteLine($"Cancellati {result} record dalla tabella videogames");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Clear();
+                Console.WriteLine($"Si è verificato un errore durante la cancellazione del videogioco: {ex.Message}");
+            }
         }
+
     }
 }
