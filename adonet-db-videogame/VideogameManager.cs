@@ -53,18 +53,25 @@ namespace adonet_db_videogame
                 }
             }
 
-            // Richiedo l'ID della casa di sviluppo del videogioco all'utente finché non viene inserito un valore valido
-            int softwareHouseId;
-            while (true)
+            // Richiedo la software house del videogioco all'utente tramite un menu
+            Console.WriteLine("Software House disponibili:");
+            Console.WriteLine("[1] Nintendo");
+            Console.WriteLine("[2] Rockstar Games");
+            Console.WriteLine("[3] Valve Corporation");
+            Console.WriteLine("[4] Electronic Arts");
+            Console.WriteLine("[5] Ubisoft");
+            Console.WriteLine("[6] Konami");
+            int softwareHouseId = 0;
+            while (softwareHouseId < 1 || softwareHouseId > 6)
             {
-                Console.Write("ID della casa di sviluppo: ");
-                if (int.TryParse(Console.ReadLine(), out softwareHouseId))
+                Console.Write("Scegli l'ID della casa di sviluppo: ");
+                if (!int.TryParse(Console.ReadLine(), out softwareHouseId))
                 {
-                    break;
+                    Console.WriteLine("L'ID inserito non è valido!");
                 }
-                else
+                else if (softwareHouseId < 1 || softwareHouseId > 6)
                 {
-                    Console.WriteLine("L'ID della casa di sviluppo non è un numero valido!");
+                    Console.WriteLine("L'ID inserito non è valido!");
                 }
             }
 
