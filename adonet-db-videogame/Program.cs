@@ -19,21 +19,27 @@
                 switch (key.KeyChar)
                 {
                     case '1':
+                        Console.Clear();
                         VideogameManager.InserisciVideogioco();
                         break;
                     case '2':
+                        Console.Clear();
                         VideogameManager.CercaVideogiocoPerId();
                         break;
                     case '3':
+                        Console.Clear();
                         VideogameManager.CercaVideogiochiPerNome();
                         break;
                     case '4':
+                        Console.Clear();
                         VideogameManager.CancellaVideogioco();
                         break;
                     case '5':
+                        Console.Clear();
                         Console.WriteLine("Arrivederci!");
                         return;
                     default:
+                        Console.Clear();
                         Console.WriteLine("Opzione non valida! Scegli tra quelle fornite");
                         break;
                 }

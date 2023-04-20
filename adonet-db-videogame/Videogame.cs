@@ -6,7 +6,20 @@ using System.Threading.Tasks;
 
 namespace adonet_db_videogame
 {
-    internal class Videogame
+    public class Videogame
     {
+        public string Name { get; set; }
+        public string Overview { get; set; }
+        public int IdSoftwareHouse { get; set; }
+        public DateTime ReleaseDate { get; set; }
+
+
+        public Videogame(string name, string overview, int idSoftwareHouse, DateTime releaseDate)
+        {
+            Name = name;
+            Overview = overview;
+            IdSoftwareHouse = idSoftwareHouse;
+            ReleaseDate = releaseDate;
+        }
     }
 }
