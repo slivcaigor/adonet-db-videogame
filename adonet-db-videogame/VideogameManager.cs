@@ -13,18 +13,19 @@ namespace adonet_db_videogame
         public static void InserisciVideogioco()
         {
             Console.WriteLine("Inserisci i dati del nuovo videogioco:");
+
             // Richiedo il nome del videogioco all'utente finché non viene inserito un valore non vuoto
             string name = "";
             while (string.IsNullOrEmpty(name))
             {
                 Console.Write("Nome: ");
-                 name = Console.ReadLine() ?? throw new ArgumentNullException(nameof(name));
+                name = Console.ReadLine() ?? throw new ArgumentNullException(nameof(name));
                 if (string.IsNullOrEmpty(name))
                 {
                     Console.WriteLine("Il nome non può essere vuoto!");
                 }
-                
             }
+
             // Richiedo la descrizione del videogioco all'utente finché non viene inserito un valore non vuoto
             string overview = "";
             while (string.IsNullOrEmpty(overview))
@@ -35,8 +36,8 @@ namespace adonet_db_videogame
                 {
                     Console.WriteLine("La descrizione non può essere vuota!");
                 }
-
             }
+
             // Richiedo la data di rilascio del videogioco all'utente finché non viene inserito un valore valido
             DateTime releaseDate;
             while (true)
@@ -51,6 +52,7 @@ namespace adonet_db_videogame
                     Console.WriteLine("La data di rilascio non è in un formato valido!");
                 }
             }
+
             // Richiedo l'ID della casa di sviluppo del videogioco all'utente finché non viene inserito un valore valido
             int softwareHouseId;
             while (true)
@@ -66,6 +68,9 @@ namespace adonet_db_videogame
                 }
             }
 
+            // Creo l'istanza della classe Videogioco con i dati inseriti dall'utente
+            Videogame videogame = new(name, overview, softwareHouseId, releaseDate);
+
             try
             {
                 // Connetto al database e inserisco il nuovo videogioco
@@ -75,11 +80,11 @@ namespace adonet_db_videogame
 
                 string query = "INSERT INTO videogames (name, overview, release_date, software_house_id) VALUES (@name, @overview, @releaseDate, @softwareHouseId)";
 
-                using SqlCommand command = new SqlCommand(query, conn);
-                command.Parameters.AddWithValue("@name", name);
-                command.Parameters.AddWithValue("@overview", overview);
-                command.Parameters.AddWithValue("@releaseDate", releaseDate);
-                command.Parameters.AddWithValue("@softwareHouseId", softwareHouseId);
+                using SqlCommand command = new(query, conn);
+                command.Parameters.AddWithValue("@name", videogame.Name);
+                command.Parameters.AddWithValue("@overview", videogame.Overview);
+                command.Parameters.AddWithValue("@releaseDate", videogame.ReleaseDate);
+                command.Parameters.AddWithValue("@softwareHouseId", videogame.IdSoftwareHouse);
 
                 int result = command.ExecuteNonQuery();
 
@@ -91,7 +96,6 @@ namespace adonet_db_videogame
                 Console.Clear();
                 Console.WriteLine($"Si è verificato un errore durante l'inserimento del nuovo videogioco: {ex.Message}");
             }
-
         }
 
         public static void CercaVideogiocoPerId()
@@ -119,12 +123,15 @@ namespace adonet_db_videogame
                 using SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    // Se è presente un record con l'ID specificato, stampa i dati del videogioco
-                    Console.WriteLine($"ID: {reader["id"]}");
-                    Console.WriteLine($"Nome: {reader["name"]}");
-                    Console.WriteLine($"Descrizione: {reader["overview"]}");
-                    Console.WriteLine($"Data di rilascio: {((DateTime)reader["release_date"]).ToString("dd/MM/yyyy")}");
-                    Console.WriteLine($"ID casa di sviluppo: {reader["software_house_id"]}");
+                    // Se è presente un record con l'ID specificato, crea un'istanza della classe Videogame
+                    string name = (string)reader["name"];
+                    string overview = (string)reader["overview"];
+                    DateTime releaseDate = (DateTime)reader["release_date"];
+                    int softwareHouseId = Convert.ToInt32(reader["software_house_id"]);
+                    Videogame videogame = new( name, overview, softwareHouseId, releaseDate);
+
+                    // Stampa i dati del videogioco tramite il metodo della classe Videogame
+                    videogame.PrintDetails();
                 }
                 else
                 {
@@ -157,12 +164,19 @@ namespace adonet_db_videogame
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Console.WriteLine($"ID: {reader["id"]}");
-                    Console.WriteLine($"Nome: {reader["name"]}");
-                    Console.WriteLine($"Descrizione: {reader["overview"]}");
-                    Console.WriteLine($"Data di rilascio: {(DateTime)reader["release_date"]:dd/MM/yyyy}");
-                    Console.WriteLine($"ID della casa di sviluppo: {reader["software_house_id"]}");
-                    Console.WriteLine();
+                    Videogame videogame = new(
+                        (string)reader["name"],
+                        (string)reader["overview"],
+                        Convert.ToInt32(reader["software_house_id"]),
+                        (DateTime)reader["release_date"]
+                    );
+
+                    videogame.PrintDetails();
+                }
+
+                if (!reader.HasRows)
+                {
+                    Console.WriteLine($"Nessun videogioco trovato con nome contenente \"{name}\"");
                 }
             }
             catch (Exception ex)

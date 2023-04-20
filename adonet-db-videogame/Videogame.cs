@@ -13,13 +13,21 @@ namespace adonet_db_videogame
         public int IdSoftwareHouse { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-
-        public Videogame(string name, string overview, int idSoftwareHouse, DateTime releaseDate)
+        public Videogame( string name, string overview, int idSoftwareHouse, DateTime releaseDate)
         {
             Name = name;
             Overview = overview;
             IdSoftwareHouse = idSoftwareHouse;
             ReleaseDate = releaseDate;
         }
+
+        public void PrintDetails()
+        {
+            Console.WriteLine($"Nome: {Name}");
+            Console.WriteLine($"Descrizione: {Overview}");
+            Console.WriteLine($"Data di rilascio: {ReleaseDate:dd/MM/yyyy}");
+            Console.WriteLine($"ID della casa di sviluppo: {IdSoftwareHouse}\n");
+        }
     }
+
 }
